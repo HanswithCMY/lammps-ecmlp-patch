@@ -99,6 +99,7 @@ FixElectrodeConp::FixElectrodeConp(LAMMPS *lmp, int narg, char **arg) :
   write_inv = write_mat = write_vec = read_inv = read_mat = false;
   symm = false;
   ffield = false;
+  gauss_fflag = true;
   thermo_time = 0.;
 
   top_group = 0;
@@ -238,6 +239,8 @@ FixElectrodeConp::FixElectrodeConp(LAMMPS *lmp, int narg, char **arg) :
       symm = utils::logical(FLERR, arg[++iarg], false, lmp);
     } else if ((strcmp(arg[iarg], "ffield") == 0)) {
       ffield = utils::logical(FLERR, arg[++iarg], false, lmp);
+    } else if ((strcmp(arg[iarg], "gauss_fflag") == 0)) {
+      gauss_fflag = utils::logical(FLERR, arg[++iarg], false, lmp);
     } else {
       error->all(FLERR, "Unknown keyword {} for fix {} command", arg[iarg], style);
     }
@@ -648,7 +651,7 @@ void FixElectrodeConp::setup_pre_reverse(int eflag, int vflag)
     error->warning(FLERR, "Computation of virials in fix {} is incompatible with TALLY package", style);
   // correct forces for initial timestep
   ev_init(eflag, vflag);
-  gausscorr(eflag, vflag, true);
+  gausscorr(eflag, vflag, gauss_fflag);
   self_energy(eflag);
 }
 
@@ -779,7 +782,7 @@ void FixElectrodeConp::pre_force(int)
 void FixElectrodeConp::pre_reverse(int eflag, int vflag)
 {
   ev_init(eflag, vflag);
-  gausscorr(eflag, vflag, true);
+  gausscorr(eflag, vflag, gauss_fflag);
   self_energy(eflag);
 }
 
