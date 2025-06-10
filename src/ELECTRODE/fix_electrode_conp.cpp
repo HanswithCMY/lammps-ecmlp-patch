@@ -782,7 +782,7 @@ void FixElectrodeConp::pre_force(int)
 void FixElectrodeConp::pre_reverse(int eflag, int vflag)
 {
   ev_init(eflag, vflag);
-  gausscorr(eflag, vflag, true);
+  gausscorr(eflag, vflag, gauss_fflag);
   self_energy(eflag);
 }
 
